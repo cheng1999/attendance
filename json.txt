@@ -1,0 +1,29 @@
+var data=[
+    {'name':'Lee Guo Cheng','studentno':2013045},
+    {'name':'Someone','studentno':2013000}
+]
+var json={
+    "clubsname":"five_members_club",
+    "date":"20161231",
+    "attend":[2013045,2013046,2013047],
+    "official_leave":[2013048],
+    "absence_for_reason":[2013049],
+    "other":[2013050,2013051],
+    "remarks":[
+		{"studentno":2013050,"remarks":"death"},
+		{"studentno":2013051,"remarks":"reborn"}
+	]
+}
+var json={
+    "date":"20161231",
+	"clubname":"five_members_club",
+	"attendance":[
+		{"studentno":2013045,"status":1,"remarks":null},
+		{"studentno":2013046,"status":1,"remarks":null},
+		{"studentno":2013047,"status":2,"remarks":null},
+		{"studentno":2013048,"status":3,"remarks":"death and wait for reborn"},
+		{"studentno":2013049,"status":4,"remarks":"back home and play cs"}
+    ]
+}
+
+{"date":"20161231","clubname":"five_members_club","attendance":[{"studentno":2013045,"status":1,"remarks":null},{"studentno":2013046,"status":1,"remarks":null},{"studentno":2013047,"status":2,"remarks":null},{"studentno":2013048,"status":3,"remarks":"death and wait for reborn"},{"studentno":2013049,"status":4,"remarks":"back home and play cs"}]}
