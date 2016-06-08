@@ -140,9 +140,27 @@ module.exports.getnamelist = function*(clubname){
         //push the data
         namelist.push({
             "studentno":studentno_rows[c].studentno,
-            "name" : studentname
+            "name":studentname
         })
     }
     return namelist;
 }
+
+//get the club list
+module.exports.getclublist = function*(){
+
+    console.log('asd');
+    var clubs_data_rows = yield query('SELECT * FROM clubs_data', {'clubid':Number,'clubname':String});
+
+    var clublist = [];
+    for(let c=0;c<clubs_data_rows.length;c++){
+        clublist.push({
+            "clubname":clubs_data_rows[c].clubname,
+            "clubid":clubs_data_rows[c].clubid
+        });
+    }
+    console.log(clublist);
+    return clublist;
+}
+
 

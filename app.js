@@ -33,14 +33,15 @@ var routes = function(req,res){
             res.end(JSON.stringify(namelist));
         }
         else if(req.url==('/getclublist')){
-
+            var clublist = yield* dboperator.getclublist();
+            res.end(JSON.stringify(clublist));
         }
         else{
-            res.end('NaN');
+            res.end('.');
         }
     }).catch(function(err){
         console.error("co catched: "+err.stack);
-        res.end(err.stack);
+        res.end(err.toString());
     });
 }
 
