@@ -10,12 +10,6 @@ const ssl_cert={
     cert: fs.readFileSync('ssl/server.crt')
 }
 
-function attendance(req, res) {
-
-}
-
-var html=fs.readFileSync('views/index.html','utf8');
-
 var routes = function(req,res){
     co(function* (){
         //response code 200 first

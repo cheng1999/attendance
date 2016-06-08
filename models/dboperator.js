@@ -1,17 +1,8 @@
 var dbBuilt = require('fs').existsSync(appROOT+'/attendance.db'),//variable for check exists of database
-    dblite = require(appROOT+'/lib/dblite.js'),
-    db = dblite(appROOT+'/attendance.db');
+    dblite = require(appROOT+'/lib/dblite.js');
+    //dblite.bin = appROOT+'/sqlite/sqlite3.exe';
+var db = dblite(appROOT+'/attendance.db');
 
-//status code of attendance
-var statuscode = {
-    'attend':1,
-    'official_leave':2,
-    'absence_for_reason':3,
-    'absenteeism':4,
-    'other':5
-}
-
-db.on('error', function(err) {console.error(err);});// to prevent server will process end by default
 db.on('close', function (code) {});// by default, it logs "bye bye", but I want it to shut up
 
 //initial
@@ -149,7 +140,6 @@ module.exports.getnamelist = function*(clubname){
 //get the club list
 module.exports.getclublist = function*(){
 
-    console.log('asd');
     var clubs_data_rows = yield query('SELECT * FROM clubs_data', {'clubid':Number,'clubname':String});
 
     var clublist = [];
@@ -159,7 +149,6 @@ module.exports.getclublist = function*(){
             "clubid":clubs_data_rows[c].clubid
         });
     }
-    console.log(clublist);
     return clublist;
 }
 
