@@ -22,15 +22,15 @@ var routes = function(req,res){
         res.writeHead(200, {'Content-Type': 'application/json'});
 
         if(req.url == '/attendance' && req.method == 'POST'){
-            var post = yield request.getpost(req);
-            var attendance = JSON.parse(post.attendance)
-            yield dboperator.attendance(attendance);
+            var post = yield request.getpost(req);//get the post from req data
+            var attendance = JSON.parse(post.attendance)//turn the post data 'attendance' which is in string format into json format
+            yield* dboperator.attendance(attendance);//write to database
             res.end('done');
         }
         else if(req.url.substring(0,13)==('/getnamelist/')){
-            var namelist = req.url.replace('/getnamelist/');
-            //res.end(html);
-            res.end(JSON.stringify(data));
+            var clubname = req.url.replace('/getnamelist/','');
+            var namelist = yield* dboperator.getnamelist(clubname);
+            res.end(JSON.stringify(namelist));
         }
         else if(req.url==('/getclublist')){
 
@@ -39,8 +39,8 @@ var routes = function(req,res){
             res.end('NaN');
         }
     }).catch(function(err){
-        res.end(err);
-        console.error("co catched: "+err);
+        console.error("co catched: "+err.stack);
+        res.end(err.stack);
     });
 }
 

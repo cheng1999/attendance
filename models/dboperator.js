@@ -32,7 +32,7 @@ module.exports.init = function(){
         db.query('\
              CREATE TABLE clubs_data (\
                 clubid INTEGER PRIMARY KEY AUTOINCREMENT,\
-                clubname VARCHAR(255) NOT NULL\
+                clubname VARCHAR(255) UNIQUE NOT NULL\
             )'
         );
         //clubs' members
@@ -45,12 +45,13 @@ module.exports.init = function(){
             )'
         );
         //clubs' members' attendance
-        //  status code:
-        //      1:attend
-        //      2:official leave
-        //      3:absence for reason
-        //      4:ABSENTEEISM
-        //      5:other
+        /*  status code:
+             1:attend
+             2:official leave
+             3:absence for reason
+             4:ABSENTEEISM
+             5:other
+        */
         db.query('\
             CREATE TABLE attendance (\
                 date_clubid_studentno INTEGER PRIMARY KEY,\
@@ -66,22 +67,33 @@ module.exports.init = function(){
     }
 }
 
+
+function isundefined(variable){
+    if(typeof(variable)=='undefined') return true;
+    else return false;
+}
+
 function query(arg1,arg2,arg3){//db.query() have maximun 4 arguments,but 1 for callback,so here's 3 arguments only
     return new Promise(function(resolve,reject){
+
         var callback = function(err,rows){ //the args 4, or the last argements
             if(err) reject(err);
             else resolve(rows);
         }
-        if(arg3) db.query(arg1,arg2,arg3,callback);
-        else if(arg2) db.query(arg1,arg2,callback);
-        else if(arg1) db.query(arg1,callback);
+        try{
+            if(arg3) db.query(arg1,arg2,arg3,callback);
+            else if(arg2) db.query(arg1,arg2,callback);
+            else if(arg1) db.query(arg1,callback);
+        }catch(err){
+            reject(err);
+        }
     });
 }
 
 //a function for get clubid with club name
 function* getclubid(clubname){
-    var rows = yield query('SELECT clubid FROM clubs_data WHERE clubname = ?',[clubname],
-        ['clubid']);
+    var rows  = yield query('SELECT clubid FROM clubs_data WHERE clubname = ?',[clubname], {'clubid' : Number});
+    if(isundefined(rows[0])) throw new Error("db error :no results for clubid");
     return rows[0].clubid;
 }
 
@@ -99,9 +111,8 @@ module.exports.attendance = function*(json){
       {"studentno":2013049,"status":4,"remarks":"back home and play cs"},
      ]
     }*/
-    var clubid = yield getclubid(json.clubname);
+    var clubid = yield* getclubid(json.clubname);
     yield query("BEGIN TRANSACTION");//woohuuuu
-    try{
         for(var c=0;c<json.attendance.length;c++){
             yield query('INSERT INTO attendance VALUES ( :date_clubid_studentno, :date, :clubid, :studentno, :status, :remarks )',{
                 'date_clubid_studentno':''+json.date+clubid+json.attendance[c].studentno,
@@ -112,17 +123,26 @@ module.exports.attendance = function*(json){
                 'remarks':json.attendance[c].remarks
             });
         }
-    }catch(err){
-        console.error(err);
-    };
     yield query('COMMIT');
 }
 
-//get name list of specified club
+//get name list (included name and studentno) of specified club
 module.exports.getnamelist = function*(clubname){
-    var clubid = yield getclubid(clubname);
-    var rows = yield query('SELECT * FROM clubs_members WHERE clubid = ?',[clubid],
-        ['studentno']
-    );
+    var clubid = yield* getclubid(clubname);
+    var studentno_rows = yield query('SELECT studentno FROM clubs_members WHERE clubid = ?', [clubid], {'studentno':Number});
+
+    var namelist = [];//prepare this array will response to client
+    for(let c=0;c<studentno_rows.length;c++){
+        //get the studentname
+        var rows = yield query('SELECT studentname FROM students_data WHERE studentno = ?',[studentno_rows[c].studentno], {'studentname':String});
+        var studentname = rows[0].studentname;
+
+        //push the data
+        namelist.push({
+            "studentno":studentno_rows[c].studentno,
+            "name" : studentname
+        })
+    }
+    return namelist;
 }
 
