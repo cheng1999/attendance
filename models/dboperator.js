@@ -3,7 +3,7 @@ var dbBuilt = require('fs').existsSync(appROOT+'/attendance.db'),//variable for 
     //dblite.bin = appROOT+'/sqlite/sqlite3.exe';
 var db = dblite(appROOT+'/attendance.db');
 
-db.on('close', function (code) {});// by default, it logs "bye bye", but I want it to shut up
+db.on('close', function (code) {});// by default, it logs 'bye bye', but I want it to shut up
 
 //initial
 module.exports.init = function(){
@@ -60,8 +60,7 @@ module.exports.init = function(){
 
 
 function isundefined(variable){
-    if(typeof(variable)=='undefined') return true;
-    else return false;
+    return (typeof(variable)=='undefined');
 }
 
 function query(arg1,arg2,arg3){//db.query() have maximun 4 arguments,but 1 for callback,so here's 3 arguments only
@@ -84,7 +83,7 @@ function query(arg1,arg2,arg3){//db.query() have maximun 4 arguments,but 1 for c
 //a function for get clubid with club name
 function* getclubid(clubname){
     var rows  = yield query('SELECT clubid FROM clubs_data WHERE clubname = ?',[clubname], {'clubid' : Number});
-    if(isundefined(rows[0])) throw new Error("db error :no results for clubid");
+    if(isundefined(rows[0])) throw new Error('db error :no results for clubid');
     return rows[0].clubid;
 }
 
@@ -92,18 +91,18 @@ function* getclubid(clubname){
 module.exports.attendance = function*(json){
     //json structure will be like this:
     /*{
-     "date":"20161231",
-     "clubname":"five_idiots_club",
-     "attendance":[
-      {"studentno":2013045,"status":1,"remarks":null},
-      {"studentno":2013046,"status":1,"remarks":null},
-      {"studentno":2013047,"status":2,"remarks":null},
-      {"studentno":2013048,"status":3,"remarks":"death and wait for reborn"},
-      {"studentno":2013049,"status":4,"remarks":"back home and play cs"},
+     'date':'20161231',
+     'clubname':'five_idiots_club',
+     'attendance':[
+      {'studentno':2013045,'status':1,'remarks':null},
+      {'studentno':2013046,'status':1,'remarks':null},
+      {'studentno':2013047,'status':2,'remarks':null},
+      {'studentno':2013048,'status':3,'remarks':'death and wait for reborn'},
+      {'studentno':2013049,'status':4,'remarks':'back home and play cs'},
      ]
     }*/
     var clubid = yield* getclubid(json.clubname);
-    yield query("BEGIN TRANSACTION");//woohuuuu
+    yield query('BEGIN TRANSACTION');//woohuuuu
         for(var c=0;c<json.attendance.length;c++){
             yield query('INSERT INTO attendance VALUES ( :date_clubid_studentno, :date, :clubid, :studentno, :status, :remarks )',{
                 'date_clubid_studentno':''+json.date+clubid+json.attendance[c].studentno,
@@ -130,11 +129,11 @@ module.exports.getnamelist = function*(clubname){
 
         //push the data
         namelist.push({
-            "studentno":studentno_rows[c].studentno,
-            "name":studentname
+            'studentno':studentno_rows[c].studentno,
+            'studentname':studentname
         })
     }
-    return namelist;
+    return {'namelist':namelist};
 }
 
 //get the club list
@@ -145,11 +144,11 @@ module.exports.getclublist = function*(){
     var clublist = [];
     for(let c=0;c<clubs_data_rows.length;c++){
         clublist.push({
-            "clubname":clubs_data_rows[c].clubname,
-            "clubid":clubs_data_rows[c].clubid
+            'clubid':clubs_data_rows[c].clubid,
+            'clubname':clubs_data_rows[c].clubname
         });
     }
-    return clublist;
+    return {'clublist':clublist};
 }
 
 

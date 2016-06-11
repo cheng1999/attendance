@@ -1,4 +1,5 @@
 global.appROOT = __dirname;
+const http = require('http');
 const https = require('https'),
     fs = require('fs'),
     co = require('./lib/co'),
@@ -35,11 +36,13 @@ var routes = function(req,res){
         }
     }).catch(function(err){
         console.error("co catched: "+err.stack);
-        res.end(err.toString());
+        var res_error={'error':err.toString()};
+        res.end(JSON.stringify(res_error));
     });
 }
 
 dboperator.init();
 https.createServer(ssl_cert,routes).listen(8080);
+http.createServer(routes).listen(8081);
 console.log('Server is running...');
 
