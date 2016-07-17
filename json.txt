@@ -1,3 +1,5 @@
+//this file is only for me easy to testing server's POST by simply copy & paste
+
 var data=[
     {'name':'Lee Guo Cheng','studentno':2013045},
     {'name':'Someone','studentno':2013000}
@@ -27,3 +29,5 @@ var json={
 }
 
 {"date":"20161231","clubname":"five_members_club","attendance":[{"studentno":2013045,"status":1,"remarks":null},{"studentno":2013046,"status":1,"remarks":null},{"studentno":2013047,"status":2,"remarks":null},{"studentno":2013048,"status":3,"remarks":"death and wait for reborn"},{"studentno":2013049,"status":4,"remarks":"back home and play cs"}]}
+attendance="{'date':'20161231','clubname':'five_members_club','attendance':[{'studentno':2013045,'status':1,'remarks':null},{'studentno':2013046,'status':1,'remarks':null},{'studentno':2013047,'status':2,'remarks':null},{'studentno':2013048,'status':3,'remarks':'death and wait for reborn'},{'studentno':2013049,'status':4,'remarks':'back home and play cs'}]}"
+//date=20161231&clubname="five_members_club"&attendance=""

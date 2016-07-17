@@ -117,8 +117,8 @@ module.exports.attendance = function*(json){
 }
 
 //get name list (included name and studentno) of specified club
-module.exports.getnamelist = function*(clubname){
-    var clubid = yield* getclubid(clubname);
+module.exports.getnamelist = function*(clubid){
+    //var clubid = yield* getclubid(clubname);
     var studentno_rows = yield query('SELECT studentno FROM clubs_members WHERE clubid = ?', [clubid], {'studentno':Number});
 
     var namelist = [];//prepare this array will response to client
@@ -129,6 +129,7 @@ module.exports.getnamelist = function*(clubname){
 
         //push the data
         namelist.push({
+            'clubid':clubid,
             'studentno':studentno_rows[c].studentno,
             'studentname':studentname
         })
