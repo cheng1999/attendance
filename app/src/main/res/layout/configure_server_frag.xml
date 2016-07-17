@@ -1,0 +1,35 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cheng.learn.attendance.configureserver.ConfigureServerFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="330dp"
+        android:layout_height="130dp"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Server&apos;s Url:"
+            android:textSize="@dimen/abc_text_size_large_material" />
+
+        <EditText
+            android:id="@+id/editText_ServerUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:hint="Example: http://192.168.1.1:8081" />
+
+        <Button
+            android:id="@+id/button_ServerUrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connect"
+            android:textAllCaps="false"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+</FrameLayout>

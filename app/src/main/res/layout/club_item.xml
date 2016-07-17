@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  Single List Item Design -->
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_textview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:textStyle="bold"
+    android:text="item text view"
+    android:padding="16dp"
+    android:textSize="@dimen/abc_text_size_large_material">
+</TextView>
