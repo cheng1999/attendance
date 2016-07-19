@@ -13,7 +13,6 @@ public class ConfigureServerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.configure_server_act);
 
-
         //create the fragment
         ConfigureServerFragment ConfigureServerFragment =
                 (ConfigureServerFragment) getSupportFragmentManager().findFragmentById(R.id.contentFrame);

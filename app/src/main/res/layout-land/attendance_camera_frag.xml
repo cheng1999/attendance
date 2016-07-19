@@ -7,14 +7,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:keepScreenOn="true">
 
-        <SurfaceView
-            android:layout_height="fill_parent"
+        <com.cheng.learn.attendance.model.ui.camera.CameraSourcePreview
+            android:id="@+id/preview"
             android:layout_width="fill_parent"
-            android:layout_weight="1"
-            android:id="@+id/camera_view"
-            />
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <com.cheng.learn.attendance.model.ui.camera.GraphicOverlay
+                android:id="@+id/graphicOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </com.cheng.learn.attendance.model.ui.camera.CameraSourcePreview>
 
         <LinearLayout
             android:layout_height="fill_parent"
@@ -27,8 +35,7 @@
                 android:id="@+id/attend_listView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:headerDividersEnabled="false" />
+                android:layout_weight="1" />
             <ListView
                 android:id="@+id/absent_listView"
                 android:layout_width="0dp"

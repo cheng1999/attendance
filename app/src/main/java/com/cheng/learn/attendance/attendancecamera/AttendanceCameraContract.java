@@ -11,7 +11,6 @@ public interface AttendanceCameraContract {
 
     }
     interface Presenter extends BasePresenter{
-        void createCameraSource();
-
+        void process_barcode(int barcode);//the barcode's number is studentno
     }
 }
