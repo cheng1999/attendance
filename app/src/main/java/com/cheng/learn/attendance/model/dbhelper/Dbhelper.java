@@ -36,9 +36,9 @@ public class Dbhelper extends SQLiteOpenHelper {
                 "CREATE TABLE members_data ("
                         +   "clubid_studentno PRIMARY KEY,"
                         +   "clubid INTEGER NOT NULL,"
-                        +   "studentno INTEGER NOT NULL PRIMARY KEY CHECK (studentno BETWEEN 0 AND 9999999),"
-                        +   "studentname VARCHAR(255) NOT NULL"
-                        +   "FOREIGN KEY(clubid) REFERENCES clubs_data(clubid),"
+                        +   "studentno INTEGER NOT NULL CHECK (studentno BETWEEN 0 AND 9999999),"
+                        +   "studentname VARCHAR(255) NOT NULL,"
+                        +   "FOREIGN KEY(clubid) REFERENCES clubs_data(clubid)"
                         //+   "FOREIGN KEY(studentno) REFERENCES students_data(studentno)"
                         +")"
         );

@@ -1,14 +1,9 @@
 package com.cheng.learn.attendance.attendancecamera;
 
 import android.content.Context;
-import android.hardware.Camera;
-import android.os.Build;
 import android.widget.Toast;
 
 import com.cheng.learn.attendance.model.dbhelper.DbOperator;
-import com.google.android.gms.vision.CameraSource;
-import com.google.android.gms.vision.MultiProcessor;
-import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 /**
  * Created by cheng on 7/15/16.
@@ -35,6 +30,6 @@ public class AttendanceCameraPresenter implements AttendanceCameraContract.Prese
 
     @Override
     public void process_barcode(int barcode) {
-        //Toast.makeText(mContext,barcode,Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext,barcode,Toast.LENGTH_LONG).show();
     }
 }

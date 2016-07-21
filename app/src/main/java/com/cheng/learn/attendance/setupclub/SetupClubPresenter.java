@@ -36,11 +36,12 @@ public class SetupClubPresenter implements SetupClubContract.Presenter{
 
         //if already have clublist in database
         ArrayList<Clubdata> clubs_data = dboperator.getClublist();
-        if(clubs_data.size()==0){
+        if(clubs_data.size()!=0){
             mSetupClubView.showClubList(clubs_data);
             return ;//end this function
         }
 
+        //if not
         //validate url first
         String server_url = dboperator.getServerurl();
 
