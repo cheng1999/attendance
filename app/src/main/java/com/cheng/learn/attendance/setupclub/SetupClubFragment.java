@@ -3,26 +3,26 @@ package com.cheng.learn.attendance.setupclub;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cheng.learn.attendance.R;
 import com.cheng.learn.attendance.configureserver.ConfigureServerActivity;
 import com.cheng.learn.attendance.model.datastructure.Clubdata;
+import com.cheng.learn.attendance.model.datastructure.Studentdata;
 
 import java.util.ArrayList;
 
 public class SetupClubFragment extends Fragment implements SetupClubContract.View{
 
     SetupClubContract.Presenter mPresenter;
-    ListView clublist_ListView;
+    ListView listView;
+    FloatingActionButton fab;
 
     public static SetupClubFragment newInstance() {return new SetupClubFragment();}
 
@@ -39,7 +39,16 @@ public class SetupClubFragment extends Fragment implements SetupClubContract.Vie
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.setup_club_frag, container, false);
 
-        clublist_ListView = (ListView)v.findViewById(R.id.club_listView);
+        listView = (ListView)v.findViewById(R.id.listView);
+
+        //on fab clicked
+        fab = (FloatingActionButton) v.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finishActivity();
+            }
+        });
 
         return v;
     }
@@ -51,11 +60,13 @@ public class SetupClubFragment extends Fragment implements SetupClubContract.Vie
     }
 
     @Override
-    public void showClubList(ArrayList<Clubdata> clubs_data){
-        final ClubItemListAdapter adapter = new ClubItemListAdapter(getContext(), clubs_data);
-        clublist_ListView.setAdapter(adapter);
+    public void showClubList(ArrayList<Clubdata> club_list){
+        final ClubItemListAdapter adapter = new ClubItemListAdapter(getContext(), club_list);
 
-        clublist_ListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //now listView is for showing the list of club
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int clubid = (int)view.getTag();
@@ -63,6 +74,20 @@ public class SetupClubFragment extends Fragment implements SetupClubContract.Vie
                 mPresenter.downloadNameList();
             }
         });
+    }
+
+    @Override
+    public void showNameList(ArrayList<Studentdata> student_list) {
+        //disable onclick listener
+        listView.setOnClickListener(null);
+
+        final MemberItemListAdapter adapter = new MemberItemListAdapter(getContext(), student_list);
+
+        //now listView is for showing the list of student
+        listView.setAdapter(adapter);
+
+        //enable fab
+        fab.setVisibility(View.VISIBLE);
     }
 
     @Override

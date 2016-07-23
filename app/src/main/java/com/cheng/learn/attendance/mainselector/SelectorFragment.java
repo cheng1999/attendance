@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.cheng.learn.attendance.R;
+import com.cheng.learn.attendance.attendancecamera.AttendanceCameraActivity;
 import com.cheng.learn.attendance.configureserver.ConfigureServerActivity;
 import com.cheng.learn.attendance.setupclub.SetupClubActivity;
 
@@ -52,7 +53,7 @@ public class SelectorFragment extends Fragment implements SelectorContract.View,
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.button_startscan:
-                mPresenter.startScanBarcode();
+                startScanBarcode();
                 break;
             case R.id.button_setup:
                 startSetup();
@@ -64,14 +65,15 @@ public class SelectorFragment extends Fragment implements SelectorContract.View,
      * start other activities
      */
     @Override
+    public void startScanBarcode(){
+        Intent intent = new Intent(getContext(), AttendanceCameraActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
     public void startSetup() {
         Intent intent = new Intent(getContext(), SetupClubActivity.class);
         startActivity(intent);
     }
 
-    @Override
-    public void startServerConfigure() {
-        Intent intent = new Intent(getContext(), ConfigureServerActivity.class);
-        startActivity(intent);
-    }
 }

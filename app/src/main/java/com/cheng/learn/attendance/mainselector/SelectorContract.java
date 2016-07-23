@@ -8,12 +8,10 @@ import com.cheng.learn.attendance.BaseView;
  */
 public interface SelectorContract {
     interface View extends BaseView<Presenter>{
-        void startServerConfigure();
         void startSetup();
+        void startScanBarcode();
     }
 
     interface Presenter extends BasePresenter{
-        void startScanBarcode();
-        void setupClub();
     }
 }

@@ -103,7 +103,9 @@ public class SetupClubPresenter implements SetupClubContract.Presenter{
                         try{
                             ArrayList<Studentdata> students_data = Studentdata.fromJsonArray(response);
                             dboperator.importNamelist(students_data);
-                            //mSetupClubView.showNameList(students_data);
+
+                            //mSetupClubView.finishActivity();
+                            mSetupClubView.showNameList(students_data);
                         }catch(JSONException e){
                             /**
                              * don know how to handler yet~ lalala~

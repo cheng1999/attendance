@@ -29,14 +29,4 @@ public class SelectorPresenter implements SelectorContract.Presenter {
             mSelectorView.startSetup();
         }
     }
-
-    @Override
-    public void startScanBarcode(){
-
-    }
-
-    @Override
-    public void setupClub(){
-
-    }
 }
