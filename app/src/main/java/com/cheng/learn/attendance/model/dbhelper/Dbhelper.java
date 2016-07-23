@@ -31,17 +31,25 @@ public class Dbhelper extends SQLiteOpenHelper {
                         +")"
         );
 
+        //students' data
+        db.execSQL(
+                "CREATE TABLE students_data ("
+                    +   "studentno INTEGER NOT NULL PRIMARY KEY CHECK (studentno BETWEEN 0 AND 9999999),"
+                    +   "studentname VARCHAR(255) NOT NULL"
+                    +")"
+        );
+
         //club's members
         db.execSQL(
-                "CREATE TABLE members_data ("
+                "CREATE TABLE club_members ("
                         +   "clubid_studentno PRIMARY KEY,"
                         +   "clubid INTEGER NOT NULL,"
                         +   "studentno INTEGER NOT NULL CHECK (studentno BETWEEN 0 AND 9999999),"
-                        +   "studentname VARCHAR(255) NOT NULL,"
-                        +   "FOREIGN KEY(clubid) REFERENCES clubs_data(clubid)"
-                        //+   "FOREIGN KEY(studentno) REFERENCES students_data(studentno)"
+                        +   "FOREIGN KEY(clubid) REFERENCES clubs_data(clubid),"
+                        +   "FOREIGN KEY(studentno) REFERENCES students_data(studentno)"
                         +")"
         );
+
         //clubs' data, define clubs as id can make keys which write into 'attendance' table slimmer
         //in database may contain more than one club's data
         db.execSQL(
@@ -50,6 +58,7 @@ public class Dbhelper extends SQLiteOpenHelper {
                         +   "clubname VARCHAR(255) UNIQUE NOT NULL"
                         +")"
         );
+
         //clubs' members' attendance
         /*  status code:
              1:attend
@@ -67,7 +76,7 @@ public class Dbhelper extends SQLiteOpenHelper {
                         +   "status INTEGER NOT NULL CHECK (status BETWEEN 1 AND 5),"
                         +   "remarks text,"
                         +   "FOREIGN KEY(clubid) REFERENCES clubs_data(clubid),"
-                        +   "FOREIGN KEY(studentno) REFERENCES members_data(studentno)"
+                        +   "FOREIGN KEY(studentno) REFERENCES club_members(studentno)"
                         +")"
         );
 

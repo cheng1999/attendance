@@ -66,6 +66,11 @@ public class ConfigureServerFragment extends Fragment implements ConfigureServer
         return v;
     }
 
+
+    /**
+     *
+     * part contain methods which will call from presenter
+     */
     @Override
     public void connectingServer(){
         String url = editText_ServerUrl.getText().toString();
@@ -79,6 +84,10 @@ public class ConfigureServerFragment extends Fragment implements ConfigureServer
         loadingDialog.dismiss();
     }
 
+
+    /**
+     * internal method
+     */
     @Override
     public void finishedActivity() {
         //loadingDialog.dismiss();

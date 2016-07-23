@@ -19,13 +19,10 @@ public class SelectorPresenter implements SelectorContract.Presenter {
         mSelectorView.setPresentor(this);
     }
 
-    /**
-     * init
-     */
     @Override
     public void start() {
         //if have no setup club yet
-        if(dboperator.getClubid()==0){
+        if(dboperator.getMainClubid()==0){
             mSelectorView.startSetup();
         }
     }

@@ -16,7 +16,8 @@ public interface DboperatorInterface {
      * read database
      */
     String getServerurl();
-    int getClubid();
+    int getMainClubid();
+    String getStudentnameByStudentno(int studentno);
     ArrayList<Clubdata> getClublist();
     ArrayList<Studentdata> getNamelist(int clubid);
     ArrayList<Attendancedata> getAttendancelist(Date date, int clubid);

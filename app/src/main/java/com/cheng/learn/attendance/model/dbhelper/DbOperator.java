@@ -35,8 +35,8 @@ public class DbOperator implements DboperatorInterface{
         SQLiteDatabase db = dbhelper.getReadableDatabase();
         String result = null;
         Cursor cursor = db.rawQuery(
-                "SELECT value FROM config where id = 1",
-                null
+            "SELECT value FROM config where id = 1",
+            null
         );
         if(cursor.moveToFirst()) {//if have record
             result = cursor.getString(cursor.getColumnIndex("value"));
@@ -46,15 +46,32 @@ public class DbOperator implements DboperatorInterface{
     }
 
     @Override
-    public int getClubid() {
+    public int getMainClubid() {
         SQLiteDatabase db = dbhelper.getReadableDatabase();
         int result = 0;
         Cursor cursor = db.rawQuery(
-                "SELECT value FROM config where id = 2",
-                null
+            "SELECT value FROM config where id = 2",
+            null
         );
         if(cursor.moveToFirst()) {//if have record
             result = cursor.getInt(cursor.getColumnIndex("value"));
+        }
+        cursor.close();
+        return result;
+    }
+
+    @Override
+    public String getStudentnameByStudentno(int studentno) {
+        SQLiteDatabase db = dbhelper.getReadableDatabase();
+        String result = null;
+        Cursor cursor = db.rawQuery(
+            "SELECT studentname FROM students_data where studentno = ?",
+            new String[]{
+                    Integer.toString(studentno)
+            }
+        );
+        if(cursor.moveToFirst()) {//if have record
+            result = cursor.getString(cursor.getColumnIndex("studentname"));
         }
         cursor.close();
         return result;
@@ -66,7 +83,7 @@ public class DbOperator implements DboperatorInterface{
         SQLiteDatabase db = dbhelper.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(
-          "SELECT * FROM clubs_data;", null
+            "SELECT * FROM clubs_data;", null
         );
 
         while(cursor.moveToNext()){
@@ -85,8 +102,8 @@ public class DbOperator implements DboperatorInterface{
         SQLiteDatabase db = dbhelper.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(
-                "SELECT * FROM members_data WHERE clubid = ?;",
-                new String[]{Integer.toString(clubid)}
+            "SELECT * FROM club_members WHERE clubid = ?;",
+            new String[]{Integer.toString(clubid)}
         );
 
         while(cursor.moveToNext()){
@@ -109,11 +126,11 @@ public class DbOperator implements DboperatorInterface{
         int Int_date = Integer.getInteger(ft.format(date)); //date in yyyyMMdd format to store into database
 
         Cursor cursor = db.rawQuery(
-                "SELECT * FROM attendance WHERE date = ? AND clubid = ?",
-                new String[]{
-                        Integer.toString(Int_date),
-                        Integer.toString(clubid)
-                }
+            "SELECT * FROM attendance WHERE date = ? AND clubid = ?",
+            new String[]{
+                Integer.toString(Int_date),
+                Integer.toString(clubid)
+            }
         );
 
         while (cursor.moveToNext()){
@@ -143,10 +160,10 @@ public class DbOperator implements DboperatorInterface{
     public void setServerurl(String url) {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         db.execSQL("INSERT OR REPLACE INTO config(id,value) values(?,?);",
-                new String[]{
-                        "1",    //server url
-                        url
-                }
+            new String[]{
+                "1",    //server url
+                url
+            }
         );
     }
 
@@ -154,10 +171,10 @@ public class DbOperator implements DboperatorInterface{
     public void setMainclub(int clubid) {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         db.execSQL("INSERT OR REPLACE INTO config(id,value) values(?,?);",
-                new String[]{
-                        "2",    //main club's id
-                        Integer.toString(clubid)
-                }
+            new String[]{
+                "2",    //main club's id
+                Integer.toString(clubid)
+            }
         );
     }
 
@@ -192,7 +209,7 @@ public class DbOperator implements DboperatorInterface{
         SQLiteDatabase db = dbhelper.getWritableDatabase();
 
         //clear the table for new clublist
-        db.execSQL("DELETE FROM members_data WHERE clubid = ?;");
+        db.execSQL("DELETE FROM club_members WHERE clubid = ?;");
 
         db.beginTransaction();
         for(int c=0;c<namelist.size();c++){
@@ -200,14 +217,21 @@ public class DbOperator implements DboperatorInterface{
             int studentno = namelist.get(c).studentno;
             String studentname = namelist.get(c).studentname;
 
+            //add into the students_data
+            db.execSQL("INSERT OR REPLACE INTO students_data(studentno,studentname) VALUES(?,?,?)",
+                new String[]{
+                    Integer.toString(studentno),
+                    studentname
+                }
+            );
+
             //the primary key for database :[clubid][studentno]
             String primarykey = "" + clubid + studentno;
-            db.execSQL("INSERT OR REPLACE INTO members_data(clubid_studentno,clubid,studentno,studentname) VALUES(?,?,?,?);",
+            db.execSQL("INSERT OR REPLACE INTO club_members(clubid_studentno,clubid,studentno) VALUES(?,?,?);",
                 new String[]{
                     primarykey,
                     Integer.toString(clubid),
-                    Integer.toString(studentno),
-                    studentname
+                    Integer.toString(studentno)
                 }
             );
         }
@@ -230,7 +254,7 @@ public class DbOperator implements DboperatorInterface{
                 Integer.toString(studentno),
                 Integer.toString(status),
                 remarks
-                }
+            }
         );
     }
 }

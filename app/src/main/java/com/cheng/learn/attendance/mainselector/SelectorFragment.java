@@ -49,21 +49,15 @@ public class SelectorFragment extends Fragment implements SelectorContract.View,
     }
 
 
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()){
-            case R.id.button_startscan:
-                startScanBarcode();
-                break;
-            case R.id.button_setup:
-                startSetup();
-                break;
-        }
-    }
-
     /**
-     * start other activities
+     *
+     * part contain methods which will call from presenter
      */
+
+    /*
+        functions to start Activity
+     */
+
     @Override
     public void startScanBarcode(){
         Intent intent = new Intent(getContext(), AttendanceCameraActivity.class);
@@ -74,6 +68,22 @@ public class SelectorFragment extends Fragment implements SelectorContract.View,
     public void startSetup() {
         Intent intent = new Intent(getContext(), SetupClubActivity.class);
         startActivity(intent);
+    }
+
+
+    /**
+     * internal method
+     */
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.button_startscan:
+                startScanBarcode();
+                break;
+            case R.id.button_setup:
+                startSetup();
+                break;
+        }
     }
 
 }

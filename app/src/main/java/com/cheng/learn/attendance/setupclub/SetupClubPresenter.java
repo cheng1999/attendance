@@ -104,7 +104,7 @@ public class SetupClubPresenter implements SetupClubContract.Presenter{
                             ArrayList<Studentdata> students_data = Studentdata.fromJsonArray(response);
                             dboperator.importNamelist(students_data);
 
-                            //mSetupClubView.finishActivity();
+
                             mSetupClubView.showNameList(students_data);
                         }catch(JSONException e){
                             /**
@@ -120,7 +120,7 @@ public class SetupClubPresenter implements SetupClubContract.Presenter{
                          */
                     }
                 },
-                dboperator.getClubid()//the club which want to download its namelist
+                dboperator.getMainClubid()//the club which want to download its namelist
         );
     }
 

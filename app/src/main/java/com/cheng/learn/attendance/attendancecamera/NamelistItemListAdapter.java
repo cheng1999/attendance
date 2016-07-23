@@ -1,4 +1,4 @@
-package com.cheng.learn.attendance.setupclub;
+package com.cheng.learn.attendance.attendancecamera;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,25 +8,25 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.cheng.learn.attendance.R;
-import com.cheng.learn.attendance.model.datastructure.Clubdata;
+import com.cheng.learn.attendance.model.datastructure.Studentdata;
 
 import java.util.ArrayList;
 
 /**
- * Created by cheng on 7/9/16.
+ * Created by cheng on 7/23/16.
  */
-public class ClubItemListAdapter extends BaseAdapter {
-    private ArrayList<Clubdata> clubs_data;
+public class NamelistItemListAdapter extends BaseAdapter {
+    private ArrayList<Studentdata> student_list;
     private Context mContext;
 
-    public ClubItemListAdapter(Context context, ArrayList<Clubdata> clubs_data) {
+    public NamelistItemListAdapter(Context context, ArrayList<Studentdata> student_list) {
         mContext = context;
-        this.clubs_data = clubs_data;
+        this.student_list = student_list;
     }
 
     @Override
     public int getCount() {
-        return clubs_data.size();
+        return student_list.size();
     }
 
     @Override
@@ -42,20 +42,27 @@ public class ClubItemListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        Clubdata clubdata = clubs_data.get(position);
+        Studentdata studentdata = student_list.get(position);
 
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.simple_item, parent, false);
         }
 
-        TextView clubitem_textview = (TextView) convertView.findViewById(R.id.item_textview);
-        clubitem_textview.setText(clubdata.clubname);
-
-        //set tag so click listener can get the clubid by tag
-        convertView.setTag(clubdata);
+        TextView item_textview = (TextView) convertView.findViewById(R.id.item_textview);
+        item_textview.setText(studentdata.studentname);
 
         // Return the completed view to render on screen
         return convertView;
+    }
+
+    public void add(Studentdata studentdata){
+        student_list.add(studentdata);
+        notifyDataSetChanged();
+    }
+
+    public void remove(Studentdata studentdata){
+        student_list.remove(studentdata);
+        notifyDataSetChanged();
     }
 }

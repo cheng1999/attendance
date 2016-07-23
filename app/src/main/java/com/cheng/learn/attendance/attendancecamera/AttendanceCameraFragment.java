@@ -4,18 +4,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cheng.learn.attendance.R;
+import com.cheng.learn.attendance.model.datastructure.Studentdata;
 import com.cheng.learn.attendance.model.ui.camera.BarcodeGraphic;
 import com.cheng.learn.attendance.model.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+
+import java.util.ArrayList;
 
 public class AttendanceCameraFragment extends Fragment implements AttendanceCameraContract.View{
 
@@ -24,6 +26,9 @@ public class AttendanceCameraFragment extends Fragment implements AttendanceCame
     //view's variables
     GraphicOverlay<BarcodeGraphic> mGraphicOverlay;
     ListView attend_ListView, absent_ListView;
+
+    NamelistItemListAdapter attend_itemlist_adapter;
+    NamelistItemListAdapter absent_itemlist_adapter;
 
     public AttendanceCameraFragment() {
         // Required empty public constructor
@@ -67,8 +72,31 @@ public class AttendanceCameraFragment extends Fragment implements AttendanceCame
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         createCameraSource();
+
+        //setup ListView
+        ArrayList<Studentdata> namelist = mPresenter.getNameList();
+        absent_itemlist_adapter = new NamelistItemListAdapter(getContext(), namelist);
+        absent_ListView.setAdapter(absent_itemlist_adapter);
+
+        attend_itemlist_adapter = new NamelistItemListAdapter(getContext(), null);
+        attend_ListView.setAdapter(absent_itemlist_adapter);
     }
 
+
+    /**
+     *
+     * part contain methods which will call from presenter
+     */
+    @Override
+    public void attend(Studentdata studentdata) {
+        attend_itemlist_adapter.add(studentdata);
+        absent_itemlist_adapter.remove(studentdata);
+    }
+
+
+    /**
+     * internal method
+     */
     public void createCameraSource(){
 
         // A barcode detector is created to track barcodes.  An associated multi-processor instance

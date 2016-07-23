@@ -59,6 +59,11 @@ public class SetupClubFragment extends Fragment implements SetupClubContract.Vie
         mPresenter.start();
     }
 
+
+    /**
+     *
+     * part contain methods which will call from presenter
+     */
     @Override
     public void showClubList(ArrayList<Clubdata> club_list){
         final ClubItemListAdapter adapter = new ClubItemListAdapter(getContext(), club_list);
@@ -69,9 +74,12 @@ public class SetupClubFragment extends Fragment implements SetupClubContract.Vie
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int clubid = (int)view.getTag();
-                mPresenter.setMainClub(clubid);
+                Clubdata clubdata = (Clubdata)view.getTag();
+
+                mPresenter.setMainClub(clubdata.clubid);
                 mPresenter.downloadNameList();
+
+                getActivity().setTitle(clubdata.clubname);
             }
         });
     }
@@ -96,8 +104,8 @@ public class SetupClubFragment extends Fragment implements SetupClubContract.Vie
         getActivity().finish();
     }
 
-    /**
-     * functions to start Activity
+    /*
+        functions to start Activity
      */
 
     public final int SERVER_CONFIGURE_CODE = 1;
