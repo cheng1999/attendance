@@ -22,6 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:inputType="textUri"
+            android:maxLines="1"
             android:hint="Example: http://192.168.1.1:8081" />
 
         <Button

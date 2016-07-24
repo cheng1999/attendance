@@ -109,7 +109,7 @@ public class DbOperator implements DboperatorInterface{
         while(cursor.moveToNext()){
             //int clubid = cursor.getInt(cursor.getColumnIndex("clubid"));
             int studentno = cursor.getInt(cursor.getColumnIndex("studentno"));
-            String studentname = cursor.getString(cursor.getColumnIndex("studentname"));
+            String studentname = getStudentnameByStudentno(studentno);
 
             students_data.add(new Studentdata(clubid,studentno,studentname));
         }
@@ -218,7 +218,7 @@ public class DbOperator implements DboperatorInterface{
             String studentname = namelist.get(c).studentname;
 
             //add into the students_data
-            db.execSQL("INSERT OR REPLACE INTO students_data(studentno,studentname) VALUES(?,?,?)",
+            db.execSQL("INSERT OR REPLACE INTO students_data(studentno,studentname) VALUES(?,?)",
                 new String[]{
                     Integer.toString(studentno),
                     studentname

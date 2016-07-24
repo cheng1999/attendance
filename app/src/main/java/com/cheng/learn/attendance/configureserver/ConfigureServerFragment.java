@@ -5,10 +5,13 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cheng.learn.attendance.R;
@@ -45,21 +48,32 @@ public class ConfigureServerFragment extends Fragment implements ConfigureServer
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.configure_server_frag, container, false);
 
-        //define editText
+        // define editText
         editText_ServerUrl = (EditText)v.findViewById(R.id.editText_ServerUrl);
 
-        //setup dialog
+        // setup dialog
         loadingDialog = new ProgressDialog(getActivity());
         loadingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         loadingDialog.setMessage("Loading. Please wait...");
         loadingDialog.setIndeterminate(true);
         loadingDialog.setCanceledOnTouchOutside(false);
 
-        //setup button on click
+        // setup button on click
         v.findViewById(R.id.button_ServerUrl).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 connectingServer();
+            }
+        });
+        // edit text enter key listener
+        editText_ServerUrl.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    connectingServer();
+                    return true;
+                }
+                return false;
             }
         });
 

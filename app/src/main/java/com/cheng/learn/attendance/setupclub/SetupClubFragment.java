@@ -87,7 +87,8 @@ public class SetupClubFragment extends Fragment implements SetupClubContract.Vie
     @Override
     public void showNameList(ArrayList<Studentdata> student_list) {
         //disable onclick listener
-        listView.setOnClickListener(null);
+        //listView.setOnItemClickListener(null);
+        listView.setClickable(false);
 
         final MemberItemListAdapter adapter = new MemberItemListAdapter(getContext(), student_list);
 
@@ -118,7 +119,7 @@ public class SetupClubFragment extends Fragment implements SetupClubContract.Vie
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //server configure done
-        if(requestCode==SERVER_CONFIGURE_CODE && resultCode == Activity.RESULT_OK){
+        if(requestCode == SERVER_CONFIGURE_CODE && resultCode == Activity.RESULT_OK){
             mPresenter.downloadClubList();
         }
     }
