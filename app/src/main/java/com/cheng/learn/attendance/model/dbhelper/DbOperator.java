@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 
 import com.cheng.learn.attendance.model.datastructure.Attendancedata;
 import com.cheng.learn.attendance.model.datastructure.Clubdata;
@@ -18,7 +19,7 @@ import java.util.Date;
  *
  * * take a look in Dbhelper to understand the usage of every functions here
  */
-public class DbOperator implements DboperatorInterface{
+public class DbOperator implements DboperatorInterface {
 
     private Dbhelper dbhelper;
 
@@ -31,7 +32,7 @@ public class DbOperator implements DboperatorInterface{
      */
 
     @Override
-    public String getServerurl() {
+    public String getServerurl() throws SQLiteException {
         SQLiteDatabase db = dbhelper.getReadableDatabase();
         String result = null;
         Cursor cursor = db.rawQuery(
@@ -46,7 +47,7 @@ public class DbOperator implements DboperatorInterface{
     }
 
     @Override
-    public int getMainClubid() {
+    public int getMainClubid() throws SQLiteException {
         SQLiteDatabase db = dbhelper.getReadableDatabase();
         int result = 0;
         Cursor cursor = db.rawQuery(
@@ -61,7 +62,7 @@ public class DbOperator implements DboperatorInterface{
     }
 
     @Override
-    public String getStudentnameByStudentno(int studentno) {
+    public String getStudentnameByStudentno(int studentno) throws SQLiteException {
         SQLiteDatabase db = dbhelper.getReadableDatabase();
         String result = null;
         Cursor cursor = db.rawQuery(
@@ -78,7 +79,7 @@ public class DbOperator implements DboperatorInterface{
     }
 
     @Override
-    public ArrayList<Clubdata> getClublist() {
+    public ArrayList<Clubdata> getClublist() throws SQLiteException {
         ArrayList<Clubdata> clubs_data = new ArrayList<Clubdata>();
         SQLiteDatabase db = dbhelper.getReadableDatabase();
 
@@ -97,7 +98,7 @@ public class DbOperator implements DboperatorInterface{
     }
 
     @Override
-    public ArrayList<Studentdata> getNamelist(int clubid) {
+    public ArrayList<Studentdata> getNamelist(int clubid) throws SQLiteException {
         ArrayList<Studentdata> students_data = new ArrayList<Studentdata>();
         SQLiteDatabase db = dbhelper.getReadableDatabase();
 
@@ -118,7 +119,7 @@ public class DbOperator implements DboperatorInterface{
     }
 
     @Override
-    public ArrayList<Attendancedata> getAttendancelist(Date date, int clubid) {
+    public ArrayList<Attendancedata> getAttendancelist(Date date, int clubid) throws SQLiteException {
         ArrayList<Attendancedata> attendance_list = new ArrayList<Attendancedata>();
         SQLiteDatabase db = dbhelper.getReadableDatabase();
 
@@ -157,7 +158,7 @@ public class DbOperator implements DboperatorInterface{
      */
 
     @Override
-    public void setServerurl(String url) {
+    public void setServerurl(String url) throws SQLiteException {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         db.execSQL("INSERT OR REPLACE INTO config(id,value) values(?,?);",
             new String[]{
@@ -168,7 +169,7 @@ public class DbOperator implements DboperatorInterface{
     }
 
     @Override
-    public void setMainclub(int clubid) {
+    public void setMainclub(int clubid) throws SQLiteException {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         db.execSQL("INSERT OR REPLACE INTO config(id,value) values(?,?);",
             new String[]{
@@ -183,7 +184,7 @@ public class DbOperator implements DboperatorInterface{
         {'clubid':2, 'clubname':'blahblah'}
     */
     @Override
-    public void importClublist(ArrayList<Clubdata> clubs_data) {
+    public void importClublist(ArrayList<Clubdata> clubs_data) throws SQLiteException {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
 
         //clear the table for new clublist
@@ -201,11 +202,12 @@ public class DbOperator implements DboperatorInterface{
                 }
             );
         }
+        db.setTransactionSuccessful();
         db.endTransaction();
     }
 
     @Override
-    public void importNamelist(ArrayList<Studentdata> namelist) {
+    public void importNamelist(ArrayList<Studentdata> namelist) throws SQLiteException {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
 
         //clear the table for new clublist
@@ -235,11 +237,12 @@ public class DbOperator implements DboperatorInterface{
                 }
             );
         }
+        db.setTransactionSuccessful();
         db.endTransaction();
     }
 
     @Override
-    public void attendance(int date, int clubid, int studentno, int status, String remarks) {
+    public void attendance(int date, int clubid, int studentno, int status, String remarks) throws SQLiteException {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
 
         //the primary key for database :[date][clubid][studentno]
