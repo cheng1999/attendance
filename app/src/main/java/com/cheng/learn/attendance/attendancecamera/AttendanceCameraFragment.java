@@ -1,11 +1,12 @@
 package com.cheng.learn.attendance.attendancecamera;
 
-import android.app.Dialog;
-import android.hardware.Camera;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -13,13 +14,9 @@ import android.widget.TextView;
 
 import com.cheng.learn.attendance.R;
 import com.cheng.learn.attendance.model.datastructure.Studentdata;
-import com.cheng.learn.attendance.model.ui.camera.BarcodeGraphic;
-import com.cheng.learn.attendance.model.ui.camera.CameraSource;
-import com.cheng.learn.attendance.model.ui.camera.CameraSourcePreview;
-import com.cheng.learn.attendance.model.ui.camera.GraphicOverlay;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.vision.MultiProcessor;
+import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.Detector;
+import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
@@ -29,13 +26,10 @@ public class AttendanceCameraFragment extends Fragment implements AttendanceCame
 
     AttendanceCameraContract.Presenter mPresenter;
 
-    // intent request code to handle updating play services if needed.
-    private static final int RC_HANDLE_GMS = 9001;
-
     // view's variables
-    CameraSource mCameraSource;
-    CameraSourcePreview mPreview;
-    GraphicOverlay<BarcodeGraphic> mGraphicOverlay;
+    SurfaceView cameraView;
+    private BarcodeDetector barcodeDetector;
+    private CameraSource cameraSource;
     ListView attend_ListView, absent_ListView;
 
     NamelistItemListAdapter attend_itemlist_adapter;
@@ -61,8 +55,7 @@ public class AttendanceCameraFragment extends Fragment implements AttendanceCame
         View v = inflater.inflate(R.layout.attendance_camera_frag, container, false);
 
         // Initial the variables of View
-        mPreview = (CameraSourcePreview) v.findViewById(R.id.preview);
-        mGraphicOverlay = (GraphicOverlay<BarcodeGraphic>) v.findViewById(R.id.graphicOverlay);
+        cameraView = (SurfaceView) v.findViewById(R.id.camera_view);
         attend_ListView = (ListView)v.findViewById(R.id.attend_listView);
         absent_ListView = (ListView)v.findViewById(R.id.absent_listView);
 
@@ -83,7 +76,7 @@ public class AttendanceCameraFragment extends Fragment implements AttendanceCame
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        createCameraSource();
+        //createCameraSource();
 
         // setup ListView
         ArrayList<Studentdata> namelist = mPresenter.getNameList();
@@ -91,41 +84,11 @@ public class AttendanceCameraFragment extends Fragment implements AttendanceCame
         absent_ListView.setAdapter(absent_itemlist_adapter);
 
         attend_itemlist_adapter = new NamelistItemListAdapter(getContext(), null);
-        attend_ListView.setAdapter(absent_itemlist_adapter);
+        attend_ListView.setAdapter(attend_itemlist_adapter);
+
     }
 
 
-    /**
-     * Restarts the camera.
-     */
-    @Override
-    public void onResume() {
-        super.onResume();
-        startCameraSource();
-    }
-
-    /**
-     * Stops the camera.
-     */
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mPreview != null) {
-            mPreview.stop();
-        }
-    }
-
-    /**
-     * Releases the resources associated with the camera source, the associated detectors, and the
-     * rest of the processing pipeline.
-     */
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mPreview != null) {
-            mPreview.release();
-        }
-    }
     /**
      *
      * part contain methods which will call from presenter
@@ -136,74 +99,61 @@ public class AttendanceCameraFragment extends Fragment implements AttendanceCame
         absent_itemlist_adapter.remove(studentdata);
     }
 
-
     /**
+     *
      * internal method
      */
 
+    private void createCameraSource(){
 
-    /**
-     * Creates and starts the camera.  Note that this uses a higher resolution in comparison
-     * to other detection examples to enable the barcode detector to detect small barcodes
-     * at long distances.
-     *
-     * Suppressing InlinedApi since there is a check that the minimum version is met before using
-     * the constant.
-     */
-    public void createCameraSource(){
+        barcodeDetector =
+                new BarcodeDetector.Builder(getContext()).build();
 
-        // A barcode detector is created to track barcodes.  An associated multi-processor instance
-        // is set to receive the barcode detection results, track the barcodes, and maintain
-        // graphics for each barcode on screen.  The factory is used by the multi-processor to
-        // create a separate tracker instance for each barcode.
-        BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(getContext()).build();
-        BarcodeTrackerFactory barcodeFactory = new BarcodeTrackerFactory(mPresenter, mGraphicOverlay);
-        barcodeDetector.setProcessor(
-                new MultiProcessor.Builder<>(barcodeFactory).build());
+        cameraSource = new CameraSource
+                .Builder(getContext(), barcodeDetector)
+                .setRequestedPreviewSize(640, 480)
+                .build();
 
 
-        // Creates and starts the camera.  Note that this uses a higher resolution in comparison
-        // to other detection examples to enable the barcode detector to detect small barcodes
-        // at long distances.
-        CameraSource.Builder builder = new CameraSource.Builder(getContext(), barcodeDetector)
-                .setFacing(CameraSource.CAMERA_FACING_BACK)
-                .setRequestedPreviewSize(1600, 1024)
-                .setRequestedFps(15.0f);
-
-        // make sure that auto focus is an available option
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            builder = builder.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-        }
-
-        mCameraSource = builder.build();
-    }
-
-
-    /**
-     * Starts or restarts the camera source, if it exists.  If the camera source doesn't exist yet
-     * (e.g., because onResume was called before the camera source was created), this will be called
-     * again when the camera source is created.
-     */
-    private void startCameraSource() throws SecurityException {
-        // check that the device has play services available.
-        int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
-                getContext());
-        if (code != ConnectionResult.SUCCESS) {
-            Dialog dlg =
-                    GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), code, RC_HANDLE_GMS);
-            dlg.show();
-        }
-
-        if (mCameraSource != null) {
-            try {
-                mPreview.start(mCameraSource, mGraphicOverlay);
-            } catch (IOException e) {
-                /**
-                 * don't know how to handler yet
-                 */
-                mCameraSource.release();
-                mCameraSource = null;
+        // add callback for surfaceholder to handle camera lifecycle
+        cameraView.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            @SuppressWarnings({"MissingPermission"})
+            public void surfaceCreated(SurfaceHolder holder) {
+                try {
+                    cameraSource.start(cameraView.getHolder());
+                } catch (IOException e) {
+                    Log.e("CAMERA SOURCE", e.getMessage());
+                }
             }
-        }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+                cameraSource.stop();
+            }
+        });
+
+        // processor to process barcodes
+        barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
+            @Override
+            public void release() {}
+            @Override
+            public void receiveDetections(Detector.Detections<Barcode> detections) {
+                final SparseArray<Barcode> barcodes = detections.getDetectedItems();
+
+                for(int c=0;c<=barcodes.size();c++){
+                    try{
+                        int studentno_barcode = barcodes.valueAt(c).valueFormat;
+                        mPresenter.process_barcode(studentno_barcode);
+                    }catch(Exception e){}//ignore if not integer
+                }
+            }
+        });
     }
+
 }
