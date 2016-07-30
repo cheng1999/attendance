@@ -6,7 +6,7 @@ var db = dblite(appROOT+'/attendance.db');
 db.on('close', function (code) {});// by default, it logs 'bye bye', but I want it to shut up
 
 //initial
-module.exports.init = function(){
+module.exports = function(){
     //turn the foreign keys on
     db.query('PRAGMA foreign_keys = ON;',function(){});//add function at the back to prevent it print out result on console
 
@@ -80,34 +80,24 @@ function query(arg1,arg2,arg3){//db.query() have maximun 4 arguments,but 1 for c
     });
 }
 
-//a function for get clubid with club name
-function* getclubid(clubname){
-    var rows  = yield query('SELECT clubid FROM clubs_data WHERE clubname = ?',[clubname], {'clubid' : Number});
-    if(isundefined(rows[0])) throw new Error('db error :no results for clubid');
-    return rows[0].clubid;
-}
-
 //store the namelist of attendance into databases
 module.exports.attendance = function*(json){
     //json structure will be like this:
     /*{
-     'date':'20161231',
-     'clubname':'five_idiots_club',
-     'attendance':[
-      {'studentno':2013045,'status':1,'remarks':null},
-      {'studentno':2013046,'status':1,'remarks':null},
-      {'studentno':2013047,'status':2,'remarks':null},
-      {'studentno':2013048,'status':3,'remarks':'death and wait for reborn'},
-      {'studentno':2013049,'status':4,'remarks':'back home and play cs'},
-     ]
-    }*/
-    var clubid = yield* getclubid(json.clubname);
+        [
+            {'date':'20161231,clubid:1,'studentno':2013045,'status':1,'remarks':null},
+            {'date':'20161231,clubid:1,'studentno':2013046,'status':1,'remarks':null},
+            {'date':'20161231,clubid:1,'studentno':2013047,'status':2,'remarks':null},
+            {'date':'20161231,clubid:1,'studentno':2013048,'status':3,'remarks':'death and wait for reborn'},
+            {'date':'20161231,clubid:1,'studentno':2013049,'status':4,'remarks':'back home and play cs'},
+        ]
+      }*/
     yield query('BEGIN TRANSACTION');//woohuuuu
         for(var c=0;c<json.attendance.length;c++){
-            yield query('INSERT INTO attendance VALUES ( :date_clubid_studentno, :date, :clubid, :studentno, :status, :remarks )',{
-                'date_clubid_studentno':''+json.date+clubid+json.attendance[c].studentno,
-                'date':json.date,
-                'clubid':clubid,
+            yield query('INSERT OR REPLACE INTO attendance VALUES ( :date_clubid_studentno, :date, :clubid, :studentno, :status, :remarks )',{
+                'date_clubid_studentno':''+json[c].date+json[c].clubid+json[c].studentno,
+                'date':json[c].date,
+                'clubid':json[c].clubid,
                 'studentno':json.attendance[c].studentno,
                 'status':json.attendance[c].status,
                 'remarks':json.attendance[c].remarks
@@ -118,7 +108,6 @@ module.exports.attendance = function*(json){
 
 //get name list (included name and studentno) of specified club
 module.exports.getnamelist = function*(clubid){
-    //var clubid = yield* getclubid(clubname);
     var studentno_rows = yield query('SELECT studentno FROM clubs_members WHERE clubid = ?', [clubid], {'studentno':Number});
 
     var namelist = [];//prepare this array will response to client
