@@ -67,6 +67,7 @@ public class Dbhelper extends SQLiteOpenHelper {
              4:ABSENTEEISM
              5:other
         */
+        //the synced is a boolean which's state this record is synced with server's database or not
         db.execSQL(
                 "CREATE TABLE attendance ("
                         +   "date_clubid_studentno INTEGER PRIMARY KEY,"
@@ -75,6 +76,7 @@ public class Dbhelper extends SQLiteOpenHelper {
                         +   "studentno INTEGER NOT NULL,"
                         +   "status INTEGER NOT NULL CHECK (status BETWEEN 1 AND 5),"
                         +   "remarks text,"
+                        +   "synced INTEGER NOT NULL CHECK (synced BETWEEN 0 AND 1) DEFAULT 0"
                         +   "FOREIGN KEY(clubid) REFERENCES clubs_data(clubid),"
                         +   "FOREIGN KEY(studentno) REFERENCES club_members(studentno)"
                         +")"

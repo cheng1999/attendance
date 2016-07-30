@@ -1,7 +1,6 @@
 package com.cheng.learn.attendance.model.dbhelper;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -118,21 +117,41 @@ public class DbOperator implements DboperatorInterface {
         return students_data;
     }
 
+    /**
+     *
+     * @param clubid
+     * @param date this is nullable, if it is null then get all the attendance record
+     * @param includedSynced want the records that included Synced or not
+     * @return
+     * @throws SQLiteException
+     */
+    //this two variable can use by other classes so code may more clearer
+    public boolean INCLUDED_SYNCED = true,
+            NOT_INCLUDED_SYNCED = false;
     @Override
-    public ArrayList<Attendancedata> getAttendancelist(Date date, int clubid) throws SQLiteException {
+    public ArrayList<Attendancedata> getAttendancelist(int clubid, Date date, boolean includedSynced) throws SQLiteException {
         ArrayList<Attendancedata> attendance_list = new ArrayList<Attendancedata>();
         SQLiteDatabase db = dbhelper.getReadableDatabase();
 
-        SimpleDateFormat ft = new SimpleDateFormat("yyyyMMdd");
-        int Int_date = Integer.getInteger(ft.format(date)); //date in yyyyMMdd format to store into database
+        // if date is null
+        String date_query_statement = null;
+        if(date!=null) {
+            SimpleDateFormat ft = new SimpleDateFormat("yyyyMMdd");
+            int Int_date = Integer.getInteger(ft.format(date)); //date in yyyyMMdd format to store into database
+            date_query_statement = "date = " + Int_date + " AND ";
+        }
 
-        Cursor cursor = db.rawQuery(
-            "SELECT * FROM attendance WHERE date = ? AND clubid = ?",
-            new String[]{
-                Integer.toString(Int_date),
-                Integer.toString(clubid)
-            }
-        );
+        // if included Synced
+        String include_synced_query = (includedSynced ? "synced = 1 AND " : null);
+
+        String queryString =
+                "SELECT * FROM attendance WHERE " +
+                        date_query_statement +
+                        include_synced_query +
+                        " clubid = " + Integer.toString(clubid);
+
+        Cursor cursor = db.rawQuery(queryString, null);
+
 
         while (cursor.moveToNext()){
             int studentno = cursor.getInt(cursor.getColumnIndex("studentno"));
@@ -259,5 +278,23 @@ public class DbOperator implements DboperatorInterface {
                 remarks
             }
         );
+    }
+
+    @Override
+    public void syncedAttendance(ArrayList<Attendancedata> attendancelist) throws SQLiteException {
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+
+        db.beginTransaction();
+        for(int c=0;c<attendancelist.size();c++){
+            Attendancedata attendancedata = attendancelist.get(c);
+
+            db.execSQL("UPDATE attendance SET synced = 1 WHERE date_clubid_studentno = ?",
+                    new String[]{
+                            ""+attendancedata.date+attendancedata.clubid+attendancedata.studentno
+                    }
+            );
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 }

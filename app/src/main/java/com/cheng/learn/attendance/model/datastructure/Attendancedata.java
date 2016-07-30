@@ -29,46 +29,44 @@ public class Attendancedata {
         this.remarks = remarks;
     }
 
+    //this one is integer date
+    public Attendancedata(int date, int clubid, int studentno, int status, String remarks) {
+
+        this.date = date;
+        this.clubid = clubid;
+        this.studentno = studentno;
+        this.status = status;
+        this.remarks = remarks;
+    }
+
     /**
-     * Factory method to export JSON objects
+     * Factory method to export JSON array
      * Attendance.toJsonArray(jsonArray);
      * <p>
      * --the json:--
-      {
-        'date':'20161231',
-        'clubid':1,
-        'attendance':[
-            {'studentno':2013045,'status':1,'remarks':null},
-            {'studentno':2013046,'status':1,'remarks':null},
-            {'studentno':2013047,'status':2,'remarks':null},
-            {'studentno':2013048,'status':3,'remarks':'death and wait for reborn'},
-            {'studentno':2013049,'status':4,'remarks':'back home and play cs'},
-        ]
-      }
+      [
+            {'date':'20161231,clubid:1,'studentno':2013045,'status':1,'remarks':null},
+            {'date':'20161231,clubid:1,'studentno':2013046,'status':1,'remarks':null},
+            {'date':'20161231,clubid:1,'studentno':2013047,'status':2,'remarks':null},
+            {'date':'20161231,clubid:1,'studentno':2013048,'status':3,'remarks':'death and wait for reborn'},
+            {'date':'20161231,clubid:1,'studentno':2013049,'status':4,'remarks':'back home and play cs'},
+      ]
      */
 
-    public static JSONObject toJson(ArrayList<Attendancedata> attendancelist) throws JSONException {
-
-        int date = attendancelist.get(0).date;
-        int clubid = attendancelist.get(0).clubid;
-
-        JSONObject JSON = new JSONObject();
-        JSON.put("date",date);
-        JSON.put("clubid",clubid);
-
-        JSONArray attendance_students_JSONArray = new JSONArray();
+    public static JSONArray toJsonArray(ArrayList<Attendancedata> attendancelist) throws JSONException {
+        JSONArray JSON_Array = new JSONArray();
         for(int c=0;c<attendancelist.size();c++){
-            JSONObject attendance_student_obj= new JSONObject();
+            JSONObject JSON_object= new JSONObject();
             Attendancedata attendancestudent = attendancelist.get(c);
 
-            attendance_student_obj.put("studentno",attendancestudent.studentno);
-            attendance_student_obj.put("status",attendancestudent.status);
-            attendance_student_obj.put("remarks",attendancestudent.remarks);
+            JSON_object.put("date"       ,attendancestudent.date);
+            JSON_object.put("clubid"     ,attendancestudent.clubid);
+            JSON_object.put("studentno"  ,attendancestudent.studentno);
+            JSON_object.put("status"     ,attendancestudent.status);
+            JSON_object.put("remarks"    ,attendancestudent.remarks);
 
-            attendance_students_JSONArray.put(attendance_student_obj);
+            JSON_Array.put(JSON_object);
         }
-        JSON.put("attendance",attendance_students_JSONArray);
-
-        return JSON;
+        return JSON_Array;
     }
 }

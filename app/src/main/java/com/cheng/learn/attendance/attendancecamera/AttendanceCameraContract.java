@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public interface AttendanceCameraContract {
     interface View extends BaseView<Presenter> {
         void attend(Studentdata studentdata);
+        void finishActivity();
 
     }
     interface Presenter extends BasePresenter{

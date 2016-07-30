@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cheng.learn.attendance.R;
+import com.cheng.learn.attendance.model.LoadingDialog;
 
 public class ConfigureServerFragment extends Fragment implements ConfigureServerContract.View{
 
@@ -52,11 +52,7 @@ public class ConfigureServerFragment extends Fragment implements ConfigureServer
         editText_ServerUrl = (EditText)v.findViewById(R.id.editText_ServerUrl);
 
         // setup dialog
-        loadingDialog = new ProgressDialog(getActivity());
-        loadingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        loadingDialog.setMessage("Loading. Please wait...");
-        loadingDialog.setIndeterminate(true);
-        loadingDialog.setCanceledOnTouchOutside(false);
+        loadingDialog = new LoadingDialog(getContext()).loadingDialog;
 
         // setup button on click
         v.findViewById(R.id.button_ServerUrl).setOnClickListener(new View.OnClickListener() {

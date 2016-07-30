@@ -20,7 +20,7 @@ public interface DboperatorInterface {
     String getStudentnameByStudentno(int studentno);
     ArrayList<Clubdata> getClublist();
     ArrayList<Studentdata> getNamelist(int clubid);
-    ArrayList<Attendancedata> getAttendancelist(Date date, int clubid);
+    ArrayList<Attendancedata> getAttendancelist(int clubid, Date date, boolean includedSynced);
 
     /**
      * write database
@@ -35,5 +35,5 @@ public interface DboperatorInterface {
     //this not need is because I want it insert into database one by one not together
     //@param date : 20161231
     void attendance(int date, int clubid, int studentno, int status, String remarks);
-
+    void syncedAttendance(ArrayList<Attendancedata> attendancelist);
 }

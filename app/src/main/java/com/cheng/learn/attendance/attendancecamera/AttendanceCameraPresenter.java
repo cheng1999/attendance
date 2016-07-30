@@ -1,7 +1,6 @@
 package com.cheng.learn.attendance.attendancecamera;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.cheng.learn.attendance.model.datastructure.Attendancedata;
 import com.cheng.learn.attendance.model.datastructure.Studentdata;

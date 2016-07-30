@@ -10,18 +10,19 @@
         android:weightSum="4">
 
         <Button
+            android:id="@+id/button_startscan"
             style="@style/SelectorButton"
-            android:text="点名"
-            android:id="@+id/button_startscan"/>
+            android:text="点名" />
         <Button
             style="@style/SelectorButton"
             android:text="click me"/>
         <Button
+            android:id="@+id/button_setup"
             style="@style/SelectorButton"
-            android:text="Setup"
-            android:id="@+id/button_setup"/>
+            android:text="Setup" />
         <Button
+            android:id="@+id/SyncButton"
             style="@style/SelectorButton"
-            android:text="click me"/>
+            android:text="Sync with server"/>
     </LinearLayout>
 </FrameLayout>

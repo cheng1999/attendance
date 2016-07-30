@@ -1,6 +1,8 @@
 package com.cheng.learn.attendance.attendancecamera;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.SparseArray;
@@ -31,6 +33,7 @@ public class AttendanceCameraFragment extends Fragment implements AttendanceCame
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     ListView attend_ListView, absent_ListView;
+    FloatingActionButton fab;
 
     NamelistItemListAdapter attend_itemlist_adapter;
     NamelistItemListAdapter absent_itemlist_adapter;
@@ -58,6 +61,7 @@ public class AttendanceCameraFragment extends Fragment implements AttendanceCame
         cameraView = (SurfaceView) v.findViewById(R.id.camera_view);
         attend_ListView = (ListView)v.findViewById(R.id.attend_listView);
         absent_ListView = (ListView)v.findViewById(R.id.absent_listView);
+        fab = (FloatingActionButton) v.findViewById(R.id.fab);
 
         // add title to ListViews
         TextView attend_Title = new TextView(getContext()),
@@ -69,6 +73,14 @@ public class AttendanceCameraFragment extends Fragment implements AttendanceCame
         attend_ListView.addHeaderView(attend_Title);
         absent_ListView.addHeaderView(absent_Title);
 
+        //floating action button click listener
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finishActivity();
+            }
+        });
+
         // created view
         return v;
     }
@@ -76,7 +88,7 @@ public class AttendanceCameraFragment extends Fragment implements AttendanceCame
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //createCameraSource();
+        createCameraSource();
 
         // setup ListView
         ArrayList<Studentdata> namelist = mPresenter.getNameList();
@@ -97,6 +109,12 @@ public class AttendanceCameraFragment extends Fragment implements AttendanceCame
     public void attend(Studentdata studentdata) {
         attend_itemlist_adapter.add(studentdata);
         absent_itemlist_adapter.remove(studentdata);
+    }
+
+    @Override
+    public void finishActivity(){
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     /**

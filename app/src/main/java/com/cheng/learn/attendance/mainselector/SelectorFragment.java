@@ -10,7 +10,6 @@ import android.widget.Button;
 
 import com.cheng.learn.attendance.R;
 import com.cheng.learn.attendance.attendancecamera.AttendanceCameraActivity;
-import com.cheng.learn.attendance.configureserver.ConfigureServerActivity;
 import com.cheng.learn.attendance.setupclub.SetupClubActivity;
 
 public class SelectorFragment extends Fragment implements SelectorContract.View, View.OnClickListener {
@@ -70,6 +69,11 @@ public class SelectorFragment extends Fragment implements SelectorContract.View,
         startActivity(intent);
     }
 
+    @Override
+    public void startServerConfigure() {
+
+    }
+
 
     /**
      * internal method
@@ -83,7 +87,14 @@ public class SelectorFragment extends Fragment implements SelectorContract.View,
             case R.id.button_setup:
                 startSetup();
                 break;
+            case R.id.SyncButton:
+                SyncAttendance();
+                break;
         }
+    }
+
+    private void SyncAttendance(){
+        mPresenter.SyncAttendance();
     }
 
 }
