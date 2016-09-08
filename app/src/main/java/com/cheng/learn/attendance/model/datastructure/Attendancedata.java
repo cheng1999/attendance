@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,8 +22,9 @@ public class Attendancedata {
 
     public Attendancedata(Date date, int clubid, int studentno, int status, String remarks) {
 
-        SimpleDateFormat ft = new SimpleDateFormat("yyyyMMdd");
-        this.date = Integer.getInteger(ft.format(date)); //date in yyyyMMdd format to store into database
+        DateFormat ft = new SimpleDateFormat("yyyyMMdd");
+        String datestring = ft.format(date);
+        this.date = Integer.parseInt(datestring); //date in yyyyMMdd format to store into database
         this.clubid = clubid;
         this.studentno = studentno;
         this.status = status;

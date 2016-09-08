@@ -1,5 +1,6 @@
 package com.cheng.learn.attendance.attendancecamera;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,12 +58,33 @@ public class NamelistItemListAdapter extends BaseAdapter {
     }
 
     public void add(Studentdata studentdata){
-        student_list.add(studentdata);
-        notifyDataSetChanged();
+        boolean existed = false;//this student attend or not
+        for(int c=0;c<getCount();c++){
+            if(student_list.get(c).studentno==studentdata.studentno){
+                existed = true;
+            }
+        }
+        if(!existed) {
+            student_list.add(studentdata);
+            update();//notifyDataSetChanged();
+        }
     }
 
     public void remove(Studentdata studentdata){
-        student_list.remove(studentdata);
-        notifyDataSetChanged();
+        for(int c=0;c<getCount();c++){
+            if(student_list.get(c).studentno==studentdata.studentno){
+                student_list.remove(student_list.get(c));
+            }
+        }
+        update();//notifyDataSetChanged();
     }
+
+    private void update(){
+        ((Activity)mContext).runOnUiThread(new Runnable() {
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
+    }
+
 }

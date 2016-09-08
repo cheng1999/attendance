@@ -76,7 +76,7 @@ public class Dbhelper extends SQLiteOpenHelper {
                         +   "studentno INTEGER NOT NULL,"
                         +   "status INTEGER NOT NULL CHECK (status BETWEEN 1 AND 5),"
                         +   "remarks text,"
-                        +   "synced INTEGER NOT NULL CHECK (synced BETWEEN 0 AND 1) DEFAULT 0"
+                        +   "synced INTEGER NOT NULL CHECK (synced BETWEEN 0 AND 1) DEFAULT 0,"
                         +   "FOREIGN KEY(clubid) REFERENCES clubs_data(clubid),"
                         +   "FOREIGN KEY(studentno) REFERENCES club_members(studentno)"
                         +")"

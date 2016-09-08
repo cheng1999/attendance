@@ -138,7 +138,7 @@ public class ConnectionOperator implements ConnectionI {
                                 try {
 
                                     checkServerError(listener, response);
-                                    listener.onResponse(response.getJSONArray("clublist"));//valid
+                                    listener.onResponse(response.getJSONArray("namelist"));//valid
 
                                 }catch(JSONException e){
                                     listener.onError(e);

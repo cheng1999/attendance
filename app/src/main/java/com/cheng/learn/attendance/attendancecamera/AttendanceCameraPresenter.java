@@ -1,6 +1,8 @@
 package com.cheng.learn.attendance.attendancecamera;
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.widget.Toast;
 
 import com.cheng.learn.attendance.model.datastructure.Attendancedata;
 import com.cheng.learn.attendance.model.datastructure.Studentdata;
@@ -41,6 +43,7 @@ public class AttendanceCameraPresenter implements AttendanceCameraContract.Prese
 
     @Override
     public void process_barcode(int barcode) {
+        //Toast.makeText(mContext, "barcode: "+barcode, Toast.LENGTH_LONG).show();
         Attendancedata attendancedata = new Attendancedata(date, clubid, barcode, 1, null);
 
         String studentname = dboperator.getStudentnameByStudentno(attendancedata.studentno);
@@ -55,6 +58,7 @@ public class AttendanceCameraPresenter implements AttendanceCameraContract.Prese
         );
 
         mView.attend(studentdata);
+
     }
 
     @Override

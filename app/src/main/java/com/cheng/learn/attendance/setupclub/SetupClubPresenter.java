@@ -1,6 +1,7 @@
 package com.cheng.learn.attendance.setupclub;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.cheng.learn.attendance.model.connectionhelper.ConnectionOperator;
 import com.cheng.learn.attendance.model.datastructure.Clubdata;
@@ -107,6 +108,7 @@ public class SetupClubPresenter implements SetupClubContract.Presenter{
 
                             mSetupClubView.showNameList(students_data);
                         }catch(JSONException e){
+                            Toast.makeText(mContext, e.toString() , Toast.LENGTH_LONG).show();
                             /**
                              * don know how to handler yet~ lalala~
                              */
@@ -114,7 +116,8 @@ public class SetupClubPresenter implements SetupClubContract.Presenter{
                     }
 
                     @Override
-                    public void onError(Exception error) {
+                    public void onError(Exception e) {
+                        Toast.makeText(mContext, e.toString() , Toast.LENGTH_LONG).show();
                         /**
                          * don know how to handler yet~ lalala~
                          */

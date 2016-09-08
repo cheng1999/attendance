@@ -268,7 +268,7 @@ public class DbOperator implements DboperatorInterface {
         String primary_key =
                 "" + date + clubid + studentno;
 
-        db.execSQL("INSERT INTO OR REPLACE attendance(date_clubid_studentno,date,clubid,studentno,status,remarks) VALUES (?,?,?,?,?,?)",
+        db.execSQL("INSERT OR REPLACE INTO attendance(date_clubid_studentno,date,clubid,studentno,status,remarks) VALUES (?,?,?,?,?,?)",
             new String[]{
                 primary_key,
                 Integer.toString(date),
