@@ -46,8 +46,7 @@ public class AttendanceCameraPresenter implements AttendanceCameraContract.Prese
         //Toast.makeText(mContext, "barcode: "+barcode, Toast.LENGTH_LONG).show();
         Attendancedata attendancedata = new Attendancedata(date, clubid, barcode, 1, null);
 
-        String studentname = dboperator.getStudentnameByStudentno(attendancedata.studentno);
-        Studentdata studentdata = new Studentdata(attendancedata.clubid, attendancedata.studentno, studentname);
+        Studentdata studentdata = attendancedata_to_studentdata(attendancedata);
 
         dboperator.attendance(
             attendancedata.date,
@@ -62,7 +61,29 @@ public class AttendanceCameraPresenter implements AttendanceCameraContract.Prese
     }
 
     @Override
+    public void process_attended(){
+        ArrayList<Attendancedata> attendancedata_list = dboperator.getAttendancelist(clubid,new Date(),false);
+        for (int c=0;c<attendancedata_list.size();c++){
+            Attendancedata attendancedata = attendancedata_list.get(c);
+            if (attendancedata.status==Attendancedata.Status.attend){
+                mView.attend(attendancedata_to_studentdata(attendancedata));
+            }
+        }
+    }
+
+    @Override
     public ArrayList<Studentdata> getNameList() {
         return dboperator.getNamelist(clubid);
+    }
+
+    /**
+     * internal method
+     */
+
+    private Studentdata attendancedata_to_studentdata(Attendancedata attendancedata){
+        String studentname = dboperator.getStudentnameByStudentno(attendancedata.studentno);
+        Studentdata studentdata = new Studentdata(attendancedata.clubid, attendancedata.studentno, studentname);
+
+        return studentdata;
     }
 }

@@ -18,6 +18,7 @@ public interface AttendanceCameraContract {
     interface Presenter extends BasePresenter{
         //the method will call when scanned a barcode
         void process_barcode(int barcode);
+        void process_attended();
 
         ArrayList<Studentdata> getNameList();
     }

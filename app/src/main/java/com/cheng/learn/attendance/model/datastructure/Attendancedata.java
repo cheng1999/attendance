@@ -20,6 +20,17 @@ public class Attendancedata {
     public int status;
     public String remarks;
 
+
+    //status code
+    public static final class Status{
+        public static final int
+            attend = 1,
+            official_leave = 2,
+            reasonable_leave = 3,
+            absenteeism = 4,
+            other = 5;
+    }
+
     public Attendancedata(Date date, int clubid, int studentno, int status, String remarks) {
 
         DateFormat ft = new SimpleDateFormat("yyyyMMdd");
